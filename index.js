@@ -1,7 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 
-module.exports = function rollupPluginImportAlias(options) {
+module.exports = function rollupImportAlias(options) {
 	if (typeof options !== 'object') {
 		return {};
 	}
@@ -12,11 +12,25 @@ module.exports = function rollupPluginImportAlias(options) {
 				if (importee.substring(0, key.length) === key) {
 					var directory = importee.replace(key, options.Paths[key]);
 					var ext, absolute;
-					for (var i = 0; i < extCount; i++) {
-						ext = options.Extensions[i];
-						absolute = directory + '.' + ext;
-						if (fs.existsSync(absolute)) {
-							return path.normalize(absolute);
+					var fsStats = fs.lstatSync(directory);
+
+					if (!extCount.length) {
+						if (fsStats.isDirectory()) {
+							var indexPath = path.join(directory, 'index.js');
+							if (fs.existsSync(indexPath)) {
+								return indexPath;
+							}
+						} else if (fsStats.isFile()) {
+							return directory;
+						}
+					} else {
+						for (var i = 0; i < extCount; i++) {
+							ext = options.Extensions[i];
+							absolute = directory + '.' + ext;
+
+							if (fs.existsSync(absolute)) {
+								return path.normalize(absolute);
+							}
 						}
 					}
 				}

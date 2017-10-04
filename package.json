@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hedzer/rollup-plugin-import-alias.git"
+    "url": "git+https://github.com/fredevery/rollup-plugin-import-alias.git"
   },
   "keywords": [
     "rollup",
@@ -19,7 +19,7 @@
   "author": "Hedzer Ferwerda <hedzer87@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Hedzer/rollup-plugin-import-alias/issues"
+    "url": "https://github.com/fredevery/rollup-plugin-import-alias/issues"
   },
-  "homepage": "https://github.com/Hedzer/rollup-plugin-import-alias#readme"
+  "homepage": "https://github.com/fredevery/rollup-plugin-import-alias#readme"
 }

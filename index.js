@@ -7,14 +7,17 @@ module.exports = function rollupImportAlias(options) {
 	}
 	return {
 		resolveId: function(importee, importer) {
-			var extCount = options.Extensions.length;
+			var extensions = options.Extensions || [];
+			var extCount = extensions.length;
+
 			for (var key in options.Paths) {
 				if (importee.substring(0, key.length) === key) {
 					var directory = importee.replace(key, options.Paths[key]);
 					var ext, absolute;
-					var fsStats = fs.lstatSync(directory);
 
-					if (!extCount.length) {
+					try {
+						var fsStats = fs.lstatSync(directory);
+
 						if (fsStats.isDirectory()) {
 							var indexPath = path.join(directory, 'index.js');
 							if (fs.existsSync(indexPath)) {
@@ -23,15 +26,19 @@ module.exports = function rollupImportAlias(options) {
 						} else if (fsStats.isFile()) {
 							return directory;
 						}
-					} else {
-						for (var i = 0; i < extCount; i++) {
-							ext = options.Extensions[i];
-							absolute = directory + '.' + ext;
+					} catch (e) {
+						if (extCount > 0) {
+							for (var i = 0; i < extCount; i++) {
+								ext = options.Extensions[i];
+								absolute = directory + '.' + ext;
 
-							if (fs.existsSync(absolute)) {
-								return path.normalize(absolute);
+								if (fs.existsSync(absolute)) {
+									return path.normalize(absolute);
+								}
 							}
 						}
+
+						throw new Error(e);
 					}
 				}
 			}
